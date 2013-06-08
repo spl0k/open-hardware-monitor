@@ -31,7 +31,8 @@ namespace OpenHardwareMonitor.Hardware {
     private bool ramEnabled;
     private bool gpuEnabled;
     private bool fanControllerEnabled;
-    private bool hddEnabled;    
+    private bool hddEnabled;
+    private bool nicEnabled;
 
     public Computer() {
       this.settings = new Settings();
@@ -105,6 +106,9 @@ namespace OpenHardwareMonitor.Hardware {
 
       if (hddEnabled)
         Add(new HDD.HarddriveGroup(settings));
+
+      if (nicEnabled)
+          Add(new NIC.NICGroup(settings));
 
       open = true;
     }
@@ -205,7 +209,26 @@ namespace OpenHardwareMonitor.Hardware {
       }
     }
 
-    public IHardware[] Hardware {
+    public bool NICEnabled
+    {
+        get { return nicEnabled; }
+
+        [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
+        set
+        {
+            if (open && value != nicEnabled)
+            {
+                if (value)
+                    Add(new NIC.NICGroup(settings));
+                else
+                    RemoveType<NIC.NICGroup>();
+            }
+            nicEnabled = value;
+        }
+    }
+
+    public IHardware[] Hardware
+    {
       get {
         List<IHardware> list = new List<IHardware>();
         foreach (IGroup group in groups)
