@@ -19,6 +19,12 @@ using OpenHardwareMonitor.Hardware;
 namespace OpenHardwareMonitor.GUI {
   public class SensorGadget : Gadget {
 
+    private enum PercentageDisplayType {
+      ProgressBar = 0,
+      Value,
+      Both
+    }
+
     private UnitManager unitManager;
 
     private Image back = Utilities.EmbeddedResources.GetImage("gadget.png");
@@ -37,6 +43,7 @@ namespace OpenHardwareMonitor.GUI {
     private int iconSize;
     private int hardwareLineHeight;
     private int sensorLineHeight;
+    private PercentageDisplayType percentageDisplayType;
     private int rightMargin;
     private int leftMargin;
     private int topMargin;
@@ -129,6 +136,7 @@ namespace OpenHardwareMonitor.GUI {
       }
 
       SetFontSize(settings.GetValue("sensorGadget.FontSize", 7.5f));
+      percentageDisplayType = (PercentageDisplayType)settings.GetValue("sensorGadget.PercentageDisplayType", 0);
       Resize(settings.GetValue("sensorGadget.Width", Size.Width));
       
       ContextMenu contextMenu = new ContextMenu();
@@ -156,6 +164,27 @@ namespace OpenHardwareMonitor.GUI {
         fontSizeMenu.MenuItems.Add(item);
       }
       contextMenu.MenuItems.Add(fontSizeMenu);
+      MenuItem percentageMenu = new MenuItem("Percentage display");
+      for (int i = 0; i < 3; i++) {
+        PercentageDisplayType type = (PercentageDisplayType)i;
+        string name;
+        switch(type) {
+          case PercentageDisplayType.ProgressBar: name = "Progress bar"; break;
+          case PercentageDisplayType.Value: name = "Numeric value"; break;
+          case PercentageDisplayType.Both: name = "Both"; break;
+          default: throw new NotImplementedException();
+        }
+        MenuItem item = new MenuItem(name);
+        item.Checked = percentageDisplayType == type;
+        item.Click += delegate(object sender, EventArgs e) {
+          percentageDisplayType = type;
+          settings.SetValue("sensorGadget.PercentageDisplayType", (int)type);
+          foreach (MenuItem mi in percentageMenu.MenuItems)
+            mi.Checked = mi == item;
+        };
+        percentageMenu.MenuItems.Add(item);
+      }
+      contextMenu.MenuItems.Add(percentageMenu);
       contextMenu.MenuItems.Add(new MenuItem("-"));
       MenuItem lockItem = new MenuItem("Lock Position and Size");
       contextMenu.MenuItems.Add(lockItem);
@@ -545,7 +574,7 @@ namespace OpenHardwareMonitor.GUI {
 
           if ((sensor.SensorType != SensorType.Load &&
                sensor.SensorType != SensorType.Control &&
-               sensor.SensorType != SensorType.Level) || !sensor.Value.HasValue) 
+               sensor.SensorType != SensorType.Level) || percentageDisplayType == PercentageDisplayType.Value || !sensor.Value.HasValue) 
           {
             string formatted;
 
@@ -576,6 +605,11 @@ namespace OpenHardwareMonitor.GUI {
                 case SensorType.Factor:
                   format = "{0:F3}";
                   break;
+                case SensorType.Load:
+                case SensorType.Control:
+                case SensorType.Level:
+                  format = "{0:F1} %";
+                  break;
               }
 
               if (sensor.SensorType == SensorType.Temperature &&
@@ -602,6 +636,16 @@ namespace OpenHardwareMonitor.GUI {
               0.6f * sensorLineHeight, 0.01f * sensor.Value.Value);
 
             remainingWidth = w - progressWidth - rightMargin;
+
+            if (percentageDisplayType == PercentageDisplayType.Both) {
+              string formatted = string.Format("{0:F1} %", sensor.Value);
+              g.DrawString(formatted, smallFont, darkWhite,
+                new RectangleF(-1, y - 1, remainingWidth, 0),
+                alignRightStringFormat);
+
+              remainingWidth = remainingWidth - (int)Math.Floor(g.MeasureString(formatted,
+                smallFont, w, StringFormat.GenericTypographic).Width);
+            }
           }
            
           remainingWidth -= leftMargin + 2;
