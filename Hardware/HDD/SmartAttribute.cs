@@ -54,8 +54,8 @@ namespace OpenHardwareMonitor.Hardware.HDD {
     /// (or null).</param>
     public SmartAttribute(byte identifier, string name,
       RawValueConversion rawValueConversion, SensorType? sensorType, 
-      int sensorChannel, bool defaultHiddenSensor = false,
-      ParameterDescription[] parameterDescriptions = null) 
+      int sensorChannel, bool defaultHiddenSensor,
+      ParameterDescription[] parameterDescriptions) 
     {
       this.Identifier = identifier;
       this.Name = name;
@@ -66,7 +66,16 @@ namespace OpenHardwareMonitor.Hardware.HDD {
       this.ParameterDescriptions = parameterDescriptions;
     }
 
-    /// <summary>
+    public SmartAttribute(byte identifier, string name,
+      RawValueConversion rawValueConversion, SensorType? sensorType,
+      int sensorChannel, bool defaultHiddenSensor) :
+      this(identifier, name, rawValueConversion, sensorType, sensorChannel, defaultHiddenSensor, null) { }
+
+    public SmartAttribute(byte identifier, string name,
+      RawValueConversion rawValueConversion, SensorType? sensorType, int sensorChannel) :
+      this(identifier, name, rawValueConversion, sensorType, sensorChannel, false, null) { }
+
+      /// <summary>
     /// Gets the SMART identifier.
     /// </summary>
     public byte Identifier { get; private set; }
