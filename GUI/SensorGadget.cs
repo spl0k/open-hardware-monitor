@@ -49,6 +49,7 @@ namespace OpenHardwareMonitor.GUI {
     private int topMargin;
     private int bottomMargin;
     private int progressWidth;
+    private float progressWidthMult;
 
     private IDictionary<IHardware, IList<ISensor>> sensors =
       new SortedDictionary<IHardware, IList<ISensor>>(new HardwareComparer());
@@ -135,6 +136,7 @@ namespace OpenHardwareMonitor.GUI {
         scale = b.HorizontalResolution / 96.0f;
       }
 
+      progressWidthMult = settings.GetValue("sensorGadget.ProgressWidthMult", 1.0f);
       SetFontSize(settings.GetValue("sensorGadget.FontSize", 7.5f));
       percentageDisplayType = (PercentageDisplayType)settings.GetValue("sensorGadget.PercentageDisplayType", 0);
       Resize(settings.GetValue("sensorGadget.Width", Size.Width));
@@ -423,7 +425,7 @@ namespace OpenHardwareMonitor.GUI {
       rightMargin = rightBorder + (int)Math.Round(0.3 * scaledFontSize);
       topMargin = topBorder;
       bottomMargin = bottomBorder + (int)Math.Round(0.3 * scaledFontSize);
-      progressWidth = (int)Math.Round(5.3 * scaledFontSize);
+      progressWidth = (int)Math.Round(5.3 * scaledFontSize * progressWidthMult);
 
       Resize((int)Math.Round(17.3 * scaledFontSize));
     }
