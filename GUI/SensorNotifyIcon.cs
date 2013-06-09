@@ -198,6 +198,8 @@ namespace OpenHardwareMonitor.GUI {
           return string.Format("{0:F0}", sensor.Value);
         case SensorType.Factor:
           return string.Format("{0:F1}", sensor.Value);
+        case SensorType.DataRate:
+          return string.Format(BytesFormatProvider.Instance, "{0:bf0}", sensor.Value);
       }
       return "-";
     }
@@ -294,15 +296,19 @@ namespace OpenHardwareMonitor.GUI {
         case SensorType.Power: format = "\n{0}: {1:F0} W"; break;
         case SensorType.Data: format = "\n{0}: {1:F0} GB"; break;
         case SensorType.Factor: format = "\n{0}: {1:F3} GB"; break;
+        case SensorType.DataRate: format = "\n{0}: {1:bf}/s"; break;
       }
-      string formattedValue = string.Format(format, sensor.Name, sensor.Value);
 
+      string formattedValue;
       if (sensor.SensorType == SensorType.Temperature &&
-        unitManager.TemperatureUnit == TemperatureUnit.Fahrenheit) 
-      {
-        format = "\n{0}: {1:F1} °F";
-        formattedValue = string.Format(format, sensor.Name,
-          UnitManager.CelsiusToFahrenheit(sensor.Value));
+        unitManager.TemperatureUnit == TemperatureUnit.Fahrenheit) {
+          format = "\n{0}: {1:F1} °F";
+          formattedValue = string.Format(format, sensor.Name,
+            UnitManager.CelsiusToFahrenheit(sensor.Value));
+      } else if (sensor.SensorType == SensorType.DataRate) {
+        formattedValue = string.Format(BytesFormatProvider.Instance, format, sensor.Name, sensor.Value);
+      } else {
+        formattedValue = string.Format(format, sensor.Name, sensor.Value);
       }
 
       string hardwareName = sensor.Hardware.Name;

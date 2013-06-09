@@ -15,6 +15,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.IO;
 using OpenHardwareMonitor.Hardware;
+using OpenHardwareMonitor.Utilities;
 
 namespace OpenHardwareMonitor.GUI {
   public class SensorGadget : Gadget {
@@ -576,12 +577,17 @@ namespace OpenHardwareMonitor.GUI {
                 case SensorType.Factor:
                   format = "{0:F3}";
                   break;
+                case SensorType.DataRate:
+                  format = "{0:bf}/s";
+                  break;
               }
 
               if (sensor.SensorType == SensorType.Temperature &&
                 unitManager.TemperatureUnit == TemperatureUnit.Fahrenheit) {
                 formatted = string.Format("{0:F1} °F",
                   UnitManager.CelsiusToFahrenheit(sensor.Value));
+              } else if (sensor.SensorType == SensorType.DataRate) {
+                formatted = string.Format(BytesFormatProvider.Instance, format, sensor.Value);
               } else {
                 formatted = string.Format(format, sensor.Value);
               }

@@ -65,6 +65,9 @@ namespace OpenHardwareMonitor.GUI {
           this.Image = Utilities.EmbeddedResources.GetImage("factor.png");
           this.Text = "Factors";
           break;
+        case SensorType.DataRate:
+          this.Text = "Data rates";
+          break;
       }
 
       NodeAdded += new NodeEventHandler(TypeNode_NodeAdded);

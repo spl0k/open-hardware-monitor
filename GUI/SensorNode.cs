@@ -27,6 +27,8 @@ namespace OpenHardwareMonitor.GUI {
         if (sensor.SensorType == SensorType.Temperature && 
           unitManager.TemperatureUnit == TemperatureUnit.Fahrenheit) {
           return string.Format("{0:F1} °F", value * 1.8 + 32);
+        } else if (sensor.SensorType == SensorType.DataRate) {
+          return string.Format(BytesFormatProvider.Instance, format, value);
         } else {
           return string.Format(format, value);
         }                
@@ -51,6 +53,7 @@ namespace OpenHardwareMonitor.GUI {
         case SensorType.Power: format = "{0:F1} W"; break;
         case SensorType.Data: format = "{0:F1} GB"; break;
         case SensorType.Factor: format = "{0:F3}"; break;
+        case SensorType.DataRate: format = "{0:bf}/s"; break;
       }
 
       bool hidden = settings.GetValue(new Identifier(sensor.Identifier, 
