@@ -66,6 +66,7 @@ namespace OpenHardwareMonitor.GUI {
           this.Text = "Factors";
           break;
         case SensorType.DataRate:
+          this.Image = Utilities.EmbeddedResources.GetImage("datarate.png");
           this.Text = "Data rates";
           break;
       }
