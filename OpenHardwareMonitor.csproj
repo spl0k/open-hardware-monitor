@@ -60,6 +60,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
@@ -118,6 +119,7 @@
     <Compile Include="GUI\UserOption.cs" />
     <Compile Include="GUI\UserRadioGroup.cs" />
     <Compile Include="Properties\AssemblyVersion.cs" />
+    <Compile Include="Utilities\BytesFormatProvider.cs" />
     <Compile Include="Utilities\HttpServer.cs" />
     <Compile Include="Utilities\PersistentSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -290,6 +292,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\ram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\datarate.png" />
+    <EmbeddedResource Include="Resources\network.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

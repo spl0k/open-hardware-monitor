@@ -25,7 +25,8 @@ namespace OpenHardwareMonitor.Hardware {
     Level, // %
     Factor, // 1
     Power, // W
-    Data, // GB = 2^30 Bytes    
+    Data, // GB = 2^30 Bytes
+    DataRate, // Bytes/sec
   }
 
   public struct SensorValue {
