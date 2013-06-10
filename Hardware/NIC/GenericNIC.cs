@@ -14,7 +14,7 @@ namespace OpenHardwareMonitor.Hardware.NIC
         {
             wmiName = name;
 
-            sensors[0] = new Sensor("Bytes recieved per sec", 0, SensorType.DataRate, this, settings);
+            sensors[0] = new Sensor("Bytes received per sec", 0, SensorType.DataRate, this, settings);
             sensors[1] = new Sensor("Bytes sent per sec", 1, SensorType.DataRate, this, settings);
             sensors[2] = new Sensor("Total bytes per sec", 2, SensorType.DataRate, this, settings);
 
